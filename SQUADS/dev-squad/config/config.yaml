@@ -1,0 +1,71 @@
+# ═══════════════════════════════════════════════════════════════════
+# Squad: Dev Squad
+# Domain: Full Stack Software Development
+# Version: 1.0.0
+# ═══════════════════════════════════════════════════════════════════
+
+squad:
+  name: dev-squad
+  display_name: "Dev Squad"
+  version: "1.0.0"
+  domain: "Full Stack Software Development"
+  description: |
+    A complete software development squad combining legendary practitioners
+    with specialized operational agents. From clean code and refactoring (Uncle Bob,
+    Martin Fowler) to TDD (Kent Beck), frontend excellence (Addy Osmani, Dan Abramov,
+    Sarah Drasner), API design, performance optimization, database development, and
+    testing — all with focus on quality, maintainability, and best practices.
+  keywords: [development, frontend, backend, fullstack, api, clean-code, architecture, testing, performance, refactoring, tdd, solid]
+  entry_agent: dev-chief
+  created_at: "2026-04-11"
+
+tiers:
+  tier_0:
+    name: "Orchestration"
+    agents: [dev-chief]
+    purpose: "Triage, routing, code review coordination, quality gating"
+  tier_1:
+    name: "Development Experts"
+    agents: [martin-fowler, kent-beck, uncle-bob, addy-osmani, dan-abramov, sarah-drasner]
+    purpose: "Domain expertise in software craftsmanship, patterns, frontend, and engineering practices"
+  tier_2:
+    name: "Specialist Agents"
+    agents: [api-architect, perf-engineer, refactor-specialist, db-developer, test-engineer]
+    purpose: "Specialized execution agents for API design, performance, refactoring, database, and testing"
+
+agents:
+  dev-chief:            { file: agents/dev-chief.md, tier: 0, icon: "🎯", focus: "Triage, routing, quality gating" }
+  martin-fowler:        { file: agents/martin-fowler.md, tier: 1, icon: "🔄", focus: "Refactoring, enterprise patterns, evolutionary architecture" }
+  kent-beck:            { file: agents/kent-beck.md, tier: 1, icon: "🧪", focus: "TDD, XP, simple design, test-first development" }
+  uncle-bob:            { file: agents/uncle-bob.md, tier: 1, icon: "📐", focus: "Clean code, SOLID, clean architecture" }
+  addy-osmani:          { file: agents/addy-osmani.md, tier: 1, icon: "⚡", focus: "Frontend performance, web vitals, loading optimization" }
+  dan-abramov:          { file: agents/dan-abramov.md, tier: 1, icon: "⚛️", focus: "React, state management, mental models" }
+  sarah-drasner:        { file: agents/sarah-drasner.md, tier: 1, icon: "✨", focus: "Frontend engineering, animations, DX, Vue/SVG" }
+  api-architect:        { file: agents/api-architect.md, tier: 2, icon: "🔌", focus: "API design, REST, GraphQL, gRPC" }
+  perf-engineer:        { file: agents/perf-engineer.md, tier: 2, icon: "🏎️", focus: "Performance profiling, optimization, benchmarking" }
+  refactor-specialist:  { file: agents/refactor-specialist.md, tier: 2, icon: "🔧", focus: "Legacy code, technical debt, safe refactoring" }
+  db-developer:         { file: agents/db-developer.md, tier: 2, icon: "🗄️", focus: "Database queries, ORM, data modeling, migrations" }
+  test-engineer:        { file: agents/test-engineer.md, tier: 2, icon: "✅", focus: "Testing strategies, E2E, unit, integration, coverage" }
+
+handoffs:
+  dev-chief: { routes_to: [martin-fowler, kent-beck, uncle-bob, addy-osmani, dan-abramov, sarah-drasner, api-architect, perf-engineer, refactor-specialist, db-developer, test-engineer] }
+  martin-fowler: { collaborates_with: [uncle-bob, kent-beck, refactor-specialist], escalates_to: [dev-chief] }
+  kent-beck: { collaborates_with: [uncle-bob, test-engineer, martin-fowler], escalates_to: [dev-chief] }
+  uncle-bob: { collaborates_with: [martin-fowler, kent-beck, refactor-specialist], escalates_to: [dev-chief] }
+  addy-osmani: { collaborates_with: [dan-abramov, sarah-drasner, perf-engineer], escalates_to: [dev-chief] }
+  dan-abramov: { collaborates_with: [addy-osmani, sarah-drasner], escalates_to: [dev-chief] }
+  sarah-drasner: { collaborates_with: [addy-osmani, dan-abramov], escalates_to: [dev-chief] }
+  api-architect: { collaborates_with: [db-developer, perf-engineer], escalates_to: [dev-chief] }
+  perf-engineer: { collaborates_with: [addy-osmani, api-architect, db-developer], escalates_to: [dev-chief] }
+  refactor-specialist: { collaborates_with: [martin-fowler, uncle-bob, test-engineer], escalates_to: [dev-chief] }
+  db-developer: { collaborates_with: [api-architect, perf-engineer], escalates_to: [dev-chief] }
+  test-engineer: { collaborates_with: [kent-beck, refactor-specialist], escalates_to: [dev-chief] }
+
+cross_cutting:
+  quality_standards: { min_score: 7.0 }
+  core_formula: "Clean Code + Tests + Performance = Production-Ready Software"
+
+settings:
+  activation:
+    prefix: "dev-squad"
+    example: "@dev-squad:uncle-bob"

@@ -1,0 +1,48 @@
+name: orchestrator-squad
+version: "1.0.0"
+short-title: "Orchestrator Squad"
+description: "Squad de 8 agentes de orquestracao cross-squad. Coordenacao entre squads, handoffs inter-squad, pipeline management, quality gates, e governanca de workflows multi-squad."
+author: "Synkra AIOS"
+license: MIT
+slashPrefix: "orchestrator-squad"
+
+aios:
+  minVersion: "4.0.0"
+  type: squad
+
+tags:
+  - orchestration
+  - cross-squad
+  - coordination
+  - pipeline
+  - governance
+  - handoff
+  - workflow
+  - multi-squad
+
+components:
+  agents:
+    - orchestra-chief.md
+    - squad-router.md
+    - handoff-manager.md
+    - pipeline-coordinator.md
+    - quality-governor.md
+    - context-keeper.md
+    - escalation-handler.md
+    - delivery-tracker.md
+  tasks:
+    - diagnose.md
+    - route-cross-squad.md
+    - coordinate-pipeline.md
+    - manage-handoff.md
+    - track-delivery.md
+    - escalate-issue.md
+    - audit-quality.md
+  workflows:
+    - wf-cross-squad-pipeline.yaml
+    - wf-multi-squad-delivery.yaml
+  checklists:
+    - output-quality.md
+
+config:
+  extends: extend

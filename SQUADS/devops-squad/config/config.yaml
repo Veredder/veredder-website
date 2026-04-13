@@ -1,0 +1,67 @@
+# ═══════════════════════════════════════════════════════════════════
+# Squad: DevOps Squad
+# Domain: Infrastructure, CI/CD & Platform Engineering
+# Version: 1.0.0
+# ═══════════════════════════════════════════════════════════════════
+
+squad:
+  name: devops-squad
+  display_name: "DevOps Squad"
+  version: "1.0.0"
+  domain: "Infrastructure, CI/CD & Platform Engineering"
+  description: |
+    A complete DevOps and platform engineering squad combining industry leaders
+    with specialized operational agents. From Kubernetes and cloud-native (Kelsey Hightower)
+    to observability (Charity Majors) and container security (Jessie Frazelle).
+    Operational agents handle CI/CD pipelines, cloud architecture, IaC, monitoring,
+    and site reliability — all with focus on automation, reliability, and security.
+  keywords: [devops, ci-cd, docker, kubernetes, cloud, infrastructure, monitoring, sre, iac, terraform, reliability, automation]
+  entry_agent: devops-chief
+  created_at: "2026-04-11"
+
+tiers:
+  tier_0:
+    name: "Orchestration"
+    agents: [devops-chief]
+    purpose: "Triage, routing, deployment coordination, reliability gating"
+  tier_1:
+    name: "DevOps Experts"
+    agents: [kelsey-hightower, charity-majors, jessie-frazelle]
+    purpose: "Domain expertise in cloud-native, observability, and systems engineering"
+  tier_2:
+    name: "Specialist Agents"
+    agents: [ci-cd-engineer, cloud-architect, container-specialist, iac-engineer, monitoring-engineer, sre-engineer]
+    purpose: "Specialized execution agents for pipelines, cloud, containers, IaC, monitoring, and reliability"
+
+agents:
+  devops-chief:          { file: agents/devops-chief.md, tier: 0, icon: "🚀", focus: "Triage, routing, deployment coordination" }
+  kelsey-hightower:      { file: agents/kelsey-hightower.md, tier: 1, icon: "☸️", focus: "Kubernetes, cloud-native, platform engineering" }
+  charity-majors:        { file: agents/charity-majors.md, tier: 1, icon: "🔭", focus: "Observability, production excellence, SRE culture" }
+  jessie-frazelle:       { file: agents/jessie-frazelle.md, tier: 1, icon: "🐧", focus: "Containers, Linux, systems engineering" }
+  ci-cd-engineer:        { file: agents/ci-cd-engineer.md, tier: 2, icon: "🔄", focus: "CI/CD pipelines, GitHub Actions, build optimization" }
+  cloud-architect:       { file: agents/cloud-architect.md, tier: 2, icon: "☁️", focus: "Cloud infrastructure, AWS, GCP, Azure" }
+  container-specialist:  { file: agents/container-specialist.md, tier: 2, icon: "🐳", focus: "Docker, Kubernetes, container orchestration" }
+  iac-engineer:          { file: agents/iac-engineer.md, tier: 2, icon: "📝", focus: "Terraform, Pulumi, Infrastructure as Code" }
+  monitoring-engineer:   { file: agents/monitoring-engineer.md, tier: 2, icon: "📊", focus: "Metrics, alerts, dashboards, logging" }
+  sre-engineer:          { file: agents/sre-engineer.md, tier: 2, icon: "🛡️", focus: "Reliability, SLOs, incident response, capacity" }
+
+handoffs:
+  devops-chief: { routes_to: [kelsey-hightower, charity-majors, jessie-frazelle, ci-cd-engineer, cloud-architect, container-specialist, iac-engineer, monitoring-engineer, sre-engineer] }
+  kelsey-hightower: { collaborates_with: [container-specialist, cloud-architect], escalates_to: [devops-chief] }
+  charity-majors: { collaborates_with: [monitoring-engineer, sre-engineer], escalates_to: [devops-chief] }
+  jessie-frazelle: { collaborates_with: [container-specialist, sre-engineer], escalates_to: [devops-chief] }
+  ci-cd-engineer: { collaborates_with: [cloud-architect, container-specialist], escalates_to: [devops-chief] }
+  cloud-architect: { collaborates_with: [iac-engineer, kelsey-hightower, sre-engineer], escalates_to: [devops-chief] }
+  container-specialist: { collaborates_with: [kelsey-hightower, jessie-frazelle, ci-cd-engineer], escalates_to: [devops-chief] }
+  iac-engineer: { collaborates_with: [cloud-architect, ci-cd-engineer], escalates_to: [devops-chief] }
+  monitoring-engineer: { collaborates_with: [charity-majors, sre-engineer], escalates_to: [devops-chief] }
+  sre-engineer: { collaborates_with: [charity-majors, monitoring-engineer, cloud-architect], escalates_to: [devops-chief] }
+
+cross_cutting:
+  quality_standards: { min_score: 7.0 }
+  core_formula: "Automation + Observability + Reliability = Production Excellence"
+
+settings:
+  activation:
+    prefix: "devops-squad"
+    example: "@devops-squad:kelsey-hightower"

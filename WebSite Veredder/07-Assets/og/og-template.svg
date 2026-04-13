@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#060608"/>
+      <stop offset="50%" stop-color="#0D0D12"/>
+      <stop offset="100%" stop-color="#060608"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#AAFF00"/>
+      <stop offset="100%" stop-color="#9B30FF"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#AAFF00"/>
+      <stop offset="100%" stop-color="#9B30FF"/>
+    </linearGradient>
+    <filter id="glowG">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Ambient glow orbs -->
+  <circle cx="200" cy="500" r="200" fill="#AAFF00" opacity="0.04" filter="url(#softGlow)"/>
+  <circle cx="1000" cy="150" r="250" fill="#9B30FF" opacity="0.06" filter="url(#softGlow)"/>
+
+  <!-- Accent line top -->
+  <rect x="80" y="60" width="120" height="3" rx="1.5" fill="url(#accentGrad)"/>
+
+  <!-- Wordmark -->
+  <text x="80" y="130" font-family="sans-serif" font-weight="700" font-size="28" fill="#F0F0F0" letter-spacing="0.15em">VEREDDER</text>
+
+  <!-- Main headline -->
+  <text x="80" y="310" font-family="sans-serif" font-weight="900" font-size="72" fill="url(#textGrad)" filter="url(#glowG)">I direct what</text>
+  <text x="80" y="395" font-family="sans-serif" font-weight="900" font-size="72" fill="url(#textGrad)" filter="url(#glowG)">doesn't exist yet.</text>
+
+  <!-- Subtitle -->
+  <text x="80" y="470" font-family="sans-serif" font-weight="400" font-size="22" fill="#B0B0C0">Diretor Criativo | IA Audiovisual</text>
+
+  <!-- Domain -->
+  <text x="80" y="570" font-family="monospace" font-weight="500" font-size="18" fill="#AAFF00" opacity="0.8">veredder.com</text>
+
+  <!-- Accent line bottom -->
+  <rect x="80" y="590" width="80" height="2" rx="1" fill="#9B30FF" opacity="0.6"/>
+</svg>

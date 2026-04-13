@@ -1,0 +1,108 @@
+# Code Review Cycle Workflow
+# Iterative review-fix cycle for code quality assurance
+
+workflow:
+  id: wf-code-review-cycle
+  name: "Ciclo de Code Review"
+  trigger: "*code-review-cycle"
+  entry_agent: dev-chief
+  estimated_duration: "30-90 minutes"
+  description: |
+    Workflow iterativo de code review, desde a analise inicial ate a aprovacao.
+    Inclui multiplas perspectivas (clean code, patterns, performance, testing)
+    e ciclo de fix-rereview ate aprovacao.
+
+  type: sequential
+  sequence:
+    - agent: uncle-bob
+      action: review-code
+      creates: clean_code_review
+    - agent: martin-fowler
+      action: review-code
+      creates: patterns_review
+    - agent: perf-engineer
+      action: optimize-performance
+      creates: perf_review
+    - agent: test-engineer
+      action: write-tests
+      creates: test_review
+    - agent: dev-chief
+      action: review-code
+      creates: final_verdict
+
+phases:
+  - id: phase_1_clean_code
+    name: "Clean Code Review"
+    agent: uncle-bob
+    task: review-code.md
+    depends_on: []
+    description: "Review code against clean code principles and SOLID"
+    checkpoint:
+      gate: "Clean code assessment complete with actionable findings"
+      veto: "HALT if code is fundamentally unreadable"
+    outputs:
+      - clean_code_findings
+      - naming_suggestions
+      - structure_recommendations
+
+  - id: phase_2_patterns
+    name: "Patterns & Architecture Review"
+    agent: martin-fowler
+    task: review-code.md
+    depends_on: []
+    description: "Review code for proper patterns and architecture alignment"
+    checkpoint:
+      gate: "Pattern assessment complete with refactoring suggestions"
+      veto: "HALT if critical architecture violations found"
+    outputs:
+      - pattern_findings
+      - refactoring_suggestions
+      - code_smell_report
+
+  - id: phase_3_performance
+    name: "Performance Review"
+    agent: perf-engineer
+    task: optimize-performance.md
+    depends_on: []
+    description: "Review code for performance concerns"
+    checkpoint:
+      gate: "Performance assessment complete"
+      veto: "HALT if critical performance antipatterns found"
+    outputs:
+      - performance_findings
+      - optimization_suggestions
+
+  - id: phase_4_testing
+    name: "Test Coverage Review"
+    agent: test-engineer
+    task: write-tests.md
+    depends_on: []
+    description: "Review test coverage and test quality"
+    checkpoint:
+      gate: "Test assessment complete with coverage report"
+      veto: "HALT if critical paths are untested"
+    outputs:
+      - test_findings
+      - coverage_gaps
+      - test_quality_assessment
+
+  - id: phase_5_synthesis
+    name: "Synthesis & Verdict"
+    agent: dev-chief
+    task: review-code.md
+    depends_on: [phase_1_clean_code, phase_2_patterns, phase_3_performance, phase_4_testing]
+    description: "Synthesize all reviews into final verdict"
+    checkpoint:
+      gate: "All reviews synthesized with clear verdict"
+      veto: "HALT if reviews conflict — escalate for resolution"
+    outputs:
+      - final_review_report
+      - verdict
+      - action_items
+
+completion_criteria:
+  - "Clean code review completed"
+  - "Patterns and architecture reviewed"
+  - "Performance assessed"
+  - "Test coverage evaluated"
+  - "Final verdict delivered with actionable items"

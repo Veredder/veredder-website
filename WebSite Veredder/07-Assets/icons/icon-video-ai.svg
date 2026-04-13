@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none" stroke="#AAFF00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Film/Play: Video AI Production -->
+  <rect x="4" y="8" width="32" height="24" rx="3" opacity="0.2" fill="#AAFF00" fill-opacity="0.05"/>
+  <rect x="4" y="8" width="32" height="24" rx="3"/>
+  <polygon points="17,14 17,26 28,20" fill="#AAFF00" fill-opacity="0.2" stroke="#AAFF00"/>
+  <!-- AI sparkle -->
+  <path d="M32 6l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="#AAFF00" stroke="none"/>
+</svg>

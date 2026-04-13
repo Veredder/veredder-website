@@ -1,0 +1,114 @@
+# Feature Development Workflow
+# Full feature implementation lifecycle from architecture to delivery
+
+workflow:
+  id: wf-feature-development
+  name: "Ciclo de Desenvolvimento de Feature"
+  trigger: "*feature-development"
+  entry_agent: dev-chief
+  estimated_duration: "1-4 hours"
+  description: |
+    Workflow completo de desenvolvimento de feature, desde a decisão de arquitetura
+    até a entrega com testes e code review. Inclui gates de qualidade em cada
+    transição de fase.
+
+  type: sequential
+  sequence:
+    - agent: dev-chief
+      action: diagnose
+      creates: assessment
+    - agent: uncle-bob
+      action: architect-solution
+      creates: architecture
+    - agent: kent-beck
+      action: write-tests
+      creates: test_design
+    - agent: dev-chief
+      action: implement-feature
+      creates: implementation
+    - agent: dev-chief
+      action: review-code
+      creates: review_report
+
+phases:
+  - id: phase_1_assessment
+    name: "Assessment & Planning"
+    agent: dev-chief
+    task: diagnose.md
+    depends_on: []
+    description: "Assess feature requirements, determine complexity, plan approach"
+    checkpoint:
+      gate: "Feature requirements understood and specialist routing decided"
+      veto: "HALT if requirements are ambiguous or incomplete"
+    outputs:
+      - feature_assessment
+      - routing_plan
+      - complexity_rating
+
+  - id: phase_2_architecture
+    name: "Architecture Design"
+    agent: uncle-bob
+    task: architect-solution.md
+    depends_on: [phase_1_assessment]
+    description: "Design clean architecture with proper boundaries and dependencies"
+    support_agents: [martin-fowler, api-architect]
+    checkpoint:
+      gate: "Architecture defined with clear component boundaries and dependency direction"
+      veto: "HALT if architecture violates SOLID or creates circular dependencies"
+    outputs:
+      - architecture_design
+      - component_interfaces
+      - dependency_map
+
+  - id: phase_3_test_design
+    name: "Test-First Design"
+    agent: kent-beck
+    task: write-tests.md
+    depends_on: [phase_2_architecture]
+    description: "Design and write failing tests before implementation (TDD)"
+    support_agents: [test-engineer]
+    checkpoint:
+      gate: "Failing tests written that cover acceptance criteria"
+      veto: "HALT if tests don't cover critical paths"
+    outputs:
+      - test_suite
+      - acceptance_tests
+      - test_coverage_plan
+
+  - id: phase_4_implementation
+    name: "Implementation"
+    agent: dev-chief
+    task: implement-feature.md
+    depends_on: [phase_3_test_design]
+    description: "Implement feature to make tests pass, following clean code principles"
+    support_agents: [dan-abramov, sarah-drasner, db-developer, api-architect]
+    checkpoint:
+      gate: "All tests pass and code follows clean code standards"
+      veto: "HALT if tests fail or code smells are critical"
+    outputs:
+      - feature_code
+      - passing_tests
+      - documentation
+
+  - id: phase_5_review
+    name: "Code Review & Quality Gate"
+    agent: dev-chief
+    task: review-code.md
+    depends_on: [phase_4_implementation]
+    description: "Comprehensive code review against quality standards"
+    support_agents: [uncle-bob, martin-fowler, perf-engineer]
+    checkpoint:
+      gate: "Code review passed with no critical findings"
+      veto: "HALT if critical clean code violations or performance issues found"
+    outputs:
+      - review_report
+      - quality_score
+      - delivery_approval
+
+completion_criteria:
+  - "Architecture designed with clean boundaries"
+  - "Tests written before implementation (TDD)"
+  - "All tests passing with adequate coverage"
+  - "Code follows clean code principles"
+  - "Code review passed with no critical findings"
+  - "Performance within acceptable bounds"

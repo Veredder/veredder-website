@@ -1,0 +1,56 @@
+name: dev-squad
+version: "1.0.0"
+short-title: "Dev Squad"
+description: "Squad de 12 agentes de desenvolvimento de software. Frontend, backend, fullstack, APIs, arquitetura de codigo, clean code, refactoring, performance — tudo com foco em qualidade e boas praticas."
+author: "Synkra AIOS"
+license: MIT
+slashPrefix: "dev-squad"
+
+aios:
+  minVersion: "4.0.0"
+  type: squad
+
+tags:
+  - development
+  - frontend
+  - backend
+  - fullstack
+  - api
+  - clean-code
+  - architecture
+  - testing
+  - performance
+  - refactoring
+
+components:
+  agents:
+    - dev-chief.md
+    - martin-fowler.md
+    - kent-beck.md
+    - uncle-bob.md
+    - addy-osmani.md
+    - dan-abramov.md
+    - sarah-drasner.md
+    - api-architect.md
+    - perf-engineer.md
+    - refactor-specialist.md
+    - db-developer.md
+    - test-engineer.md
+  tasks:
+    - diagnose.md
+    - implement-feature.md
+    - refactor-code.md
+    - review-code.md
+    - optimize-performance.md
+    - design-api.md
+    - write-tests.md
+    - debug-issue.md
+    - architect-solution.md
+  workflows:
+    - wf-feature-development.yaml
+    - wf-code-review-cycle.yaml
+  checklists:
+    - output-quality.md
+
+config:
+  extends: extend

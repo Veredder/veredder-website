@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none" stroke="#AAFF00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Compass/Wand: Creative Direction -->
+  <circle cx="20" cy="20" r="16" opacity="0.2"/>
+  <path d="M20 4v4M20 32v4M4 20h4M32 20h4"/>
+  <path d="M14 14l12 4-8 4-4 8 4-12z" fill="#AAFF00" fill-opacity="0.15" stroke="#AAFF00"/>
+  <circle cx="20" cy="20" r="2" fill="#AAFF00"/>
+</svg>

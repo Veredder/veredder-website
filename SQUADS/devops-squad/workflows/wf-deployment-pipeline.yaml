@@ -1,0 +1,111 @@
+# Deployment Pipeline Workflow
+# Full deployment lifecycle from build to production
+
+workflow:
+  id: wf-deployment-pipeline
+  name: "Pipeline de Deployment Completo"
+  trigger: "*deployment-pipeline"
+  entry_agent: devops-chief
+  estimated_duration: "1-3 hours"
+  description: |
+    Workflow completo de deployment, desde o build da aplicacao ate o deploy em
+    producao com monitoramento. Inclui gates de qualidade e rollback automatico.
+
+  type: sequential
+  sequence:
+    - agent: devops-chief
+      action: diagnose
+      creates: deployment_plan
+    - agent: container-specialist
+      action: containerize
+      creates: container_image
+    - agent: ci-cd-engineer
+      action: setup-pipeline
+      creates: pipeline_config
+    - agent: monitoring-engineer
+      action: setup-monitoring
+      creates: monitoring_config
+    - agent: devops-chief
+      action: deploy-service
+      creates: deployment_result
+
+phases:
+  - id: phase_1_planning
+    name: "Deployment Planning"
+    agent: devops-chief
+    task: diagnose.md
+    depends_on: []
+    description: "Assess application, plan deployment strategy, define rollback"
+    checkpoint:
+      gate: "Deployment plan approved with rollback strategy defined"
+      veto: "HALT if no rollback strategy or missing prerequisites"
+    outputs:
+      - deployment_plan
+      - rollback_strategy
+      - environment_checklist
+
+  - id: phase_2_containerize
+    name: "Containerization"
+    agent: container-specialist
+    task: containerize.md
+    depends_on: [phase_1_planning]
+    description: "Build and optimize container image"
+    support_agents: [jessie-frazelle]
+    checkpoint:
+      gate: "Container image built, scanned, and pushed to registry"
+      veto: "HALT if security scan finds critical vulnerabilities"
+    outputs:
+      - container_image
+      - security_scan_report
+
+  - id: phase_3_pipeline
+    name: "Pipeline Configuration"
+    agent: ci-cd-engineer
+    task: setup-pipeline.md
+    depends_on: [phase_2_containerize]
+    description: "Configure CI/CD pipeline for the deployment"
+    checkpoint:
+      gate: "Pipeline configured with all stages passing"
+      veto: "HALT if tests fail or security scan blocks"
+    outputs:
+      - pipeline_config
+      - test_results
+      - build_artifacts
+
+  - id: phase_4_monitoring
+    name: "Monitoring Setup"
+    agent: monitoring-engineer
+    task: setup-monitoring.md
+    depends_on: [phase_1_planning]
+    description: "Configure monitoring, alerts, and dashboards for the deployment"
+    support_agents: [charity-majors, sre-engineer]
+    checkpoint:
+      gate: "Monitoring configured with golden signals and SLO alerts"
+      veto: "HALT if critical metrics are not being collected"
+    outputs:
+      - monitoring_config
+      - alert_rules
+      - dashboard
+
+  - id: phase_5_deploy
+    name: "Production Deployment"
+    agent: devops-chief
+    task: deploy-service.md
+    depends_on: [phase_3_pipeline, phase_4_monitoring]
+    description: "Execute deployment with chosen strategy"
+    support_agents: [sre-engineer, cloud-architect]
+    checkpoint:
+      gate: "Deployment successful, health checks passing, monitoring green"
+      veto: "HALT and ROLLBACK if health checks fail or error rate spikes"
+    outputs:
+      - deployment_result
+      - health_status
+      - monitoring_baseline
+
+completion_criteria:
+  - "Container image built and security-scanned"
+  - "CI/CD pipeline configured and passing"
+  - "Monitoring and alerts configured"
+  - "Deployment executed with chosen strategy"
+  - "Health checks passing in production"
+  - "Rollback plan verified and ready"

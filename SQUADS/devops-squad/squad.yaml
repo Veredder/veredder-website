@@ -1,0 +1,54 @@
+name: devops-squad
+version: "1.0.0"
+short-title: "DevOps Squad"
+description: "Squad de 10 agentes de DevOps e infraestrutura. CI/CD, containers, cloud, IaC, monitoramento, SRE, seguranca de infra — tudo com foco em automacao e confiabilidade."
+author: "Synkra AIOS"
+license: MIT
+slashPrefix: "devops-squad"
+
+aios:
+  minVersion: "4.0.0"
+  type: squad
+
+tags:
+  - devops
+  - ci-cd
+  - docker
+  - kubernetes
+  - cloud
+  - infrastructure
+  - monitoring
+  - sre
+  - iac
+  - terraform
+
+components:
+  agents:
+    - devops-chief.md
+    - kelsey-hightower.md
+    - charity-majors.md
+    - jessie-frazelle.md
+    - ci-cd-engineer.md
+    - cloud-architect.md
+    - container-specialist.md
+    - iac-engineer.md
+    - monitoring-engineer.md
+    - sre-engineer.md
+  tasks:
+    - diagnose.md
+    - setup-pipeline.md
+    - deploy-service.md
+    - configure-infrastructure.md
+    - setup-monitoring.md
+    - incident-response.md
+    - containerize.md
+    - optimize-pipeline.md
+    - security-hardening.md
+  workflows:
+    - wf-deployment-pipeline.yaml
+    - wf-infrastructure-setup.yaml
+  checklists:
+    - output-quality.md
+
+config:
+  extends: extend

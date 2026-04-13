@@ -1,0 +1,80 @@
+# ═══════════════════════════════════════════════════════════════════
+# Squad: Orchestrator Squad
+# Domain: Cross-Squad Coordination & Multi-Squad Workflow Management
+# Version: 1.0.0
+# ═══════════════════════════════════════════════════════════════════
+
+squad:
+  name: orchestrator-squad
+  display_name: "Orchestrator Squad"
+  version: "1.0.0"
+  domain: "Cross-Squad Coordination & Multi-Squad Workflow Management"
+  description: |
+    The meta-orchestration squad that coordinates work across all other squads.
+    When a user request spans multiple domains (brand → copy → design → dev → devops),
+    this squad manages the end-to-end pipeline, handoffs between squads, context
+    preservation, quality gates at transitions, escalation handling, and delivery tracking.
+    The Orchestrator Squad is the conductor — it never executes domain work directly.
+  keywords: [orchestration, cross-squad, coordination, pipeline, governance, handoff, workflow, multi-squad, delivery]
+  entry_agent: orchestra-chief
+  created_at: "2026-04-11"
+
+tiers:
+  tier_0:
+    name: "Meta-Orchestration"
+    agents: [orchestra-chief]
+    purpose: "Top-level coordination, squad assessment, pipeline planning"
+  tier_1:
+    name: "Coordination Agents"
+    agents: [squad-router, handoff-manager, pipeline-coordinator, quality-governor]
+    purpose: "Core coordination functions: routing, handoffs, sequencing, quality"
+  tier_2:
+    name: "Support Agents"
+    agents: [context-keeper, escalation-handler, delivery-tracker]
+    purpose: "Context preservation, conflict resolution, status tracking"
+
+agents:
+  orchestra-chief:       { file: agents/orchestra-chief.md, tier: 0, icon: "🎼", focus: "Meta-orchestration, squad assessment, pipeline planning", alias: "Telinho" }
+  squad-router:          { file: agents/squad-router.md, tier: 1, icon: "🧭", focus: "Intelligent routing to squads and specialists" }
+  handoff-manager:       { file: agents/handoff-manager.md, tier: 1, icon: "🤝", focus: "Cross-squad handoff coordination and context transfer" }
+  pipeline-coordinator:  { file: agents/pipeline-coordinator.md, tier: 1, icon: "📋", focus: "Multi-squad pipeline sequencing and dependency management" }
+  quality-governor:      { file: agents/quality-governor.md, tier: 1, icon: "⚖️", focus: "Cross-squad quality gates and standard enforcement" }
+  context-keeper:        { file: agents/context-keeper.md, tier: 2, icon: "🧠", focus: "Context preservation across squad switches" }
+  escalation-handler:    { file: agents/escalation-handler.md, tier: 2, icon: "🚨", focus: "Cross-squad escalation and conflict resolution" }
+  delivery-tracker:      { file: agents/delivery-tracker.md, tier: 2, icon: "📊", focus: "End-to-end delivery tracking and status reporting" }
+
+handoffs:
+  orchestra-chief: { routes_to: [squad-router, handoff-manager, pipeline-coordinator, quality-governor, context-keeper, escalation-handler, delivery-tracker] }
+  squad-router: { collaborates_with: [context-keeper, handoff-manager], escalates_to: [orchestra-chief] }
+  handoff-manager: { collaborates_with: [context-keeper, squad-router], escalates_to: [orchestra-chief] }
+  pipeline-coordinator: { collaborates_with: [handoff-manager, quality-governor, delivery-tracker], escalates_to: [orchestra-chief] }
+  quality-governor: { collaborates_with: [pipeline-coordinator, escalation-handler], escalates_to: [orchestra-chief] }
+  context-keeper: { collaborates_with: [handoff-manager, squad-router], escalates_to: [orchestra-chief] }
+  escalation-handler: { collaborates_with: [quality-governor, orchestra-chief], escalates_to: [orchestra-chief] }
+  delivery-tracker: { collaborates_with: [pipeline-coordinator, quality-governor], escalates_to: [orchestra-chief] }
+
+# Cross-squad routing map — which squads handle which domains
+squad_routing:
+  brand_strategy: { squad: brand-squad, entry: brand-chief }
+  copywriting: { squad: copy-squad, entry: copy-chief }
+  design: { squad: design-squad, entry: design-chief }
+  ui_ux: { squad: ui-ux-pro-max-skill-main, entry: null }
+  development: { squad: dev-squad, entry: dev-chief }
+  devops: { squad: devops-squad, entry: devops-chief }
+  cybersecurity: { squad: cybersecurity, entry: cyber-chief }
+  data_analytics: { squad: data-squad, entry: data-chief }
+  traffic_ads: { squad: traffic-masters, entry: traffic-chief }
+  marketing: { squad: marketing-opes, entry: null }
+  business_strategy: { squad: hormozi-squad, entry: hormozi-chief }
+  c_level: { squad: c-level-squad, entry: null }
+  storytelling: { squad: storytelling, entry: null }
+  content: { squad: content-distillery, entry: null }
+
+cross_cutting:
+  quality_standards: { min_score: 7.0 }
+  core_formula: "Routing + Handoffs + Context + Quality Gates = Seamless Multi-Squad Delivery"
+
+settings:
+  activation:
+    prefix: "orchestrator-squad"
+    example: "@orchestrator-squad:squad-router"

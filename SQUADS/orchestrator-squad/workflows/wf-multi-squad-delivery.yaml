@@ -1,0 +1,94 @@
+# Multi-Squad Delivery Workflow
+# End-to-end delivery coordination for complex multi-squad projects
+
+workflow:
+  id: wf-multi-squad-delivery
+  name: "Entrega Multi-Squad End-to-End"
+  trigger: "*multi-squad-delivery"
+  entry_agent: orchestra-chief
+  estimated_duration: "4-8 hours (depending on squads)"
+  description: |
+    Workflow completo para projetos que envolvem multiplas squads.
+    Desde o planejamento ate a entrega final, com tracking continuo,
+    quality gates e gestao de riscos.
+
+  type: sequential
+
+phases:
+  - id: phase_1_scope
+    name: "Scoping & Squad Identification"
+    agent: orchestra-chief
+    task: diagnose.md
+    depends_on: []
+    description: "Define scope, identify all squads needed, assess complexity"
+    checkpoint:
+      gate: "Scope defined, squads identified, complexity assessed"
+      veto: "HALT if scope is unclear"
+    outputs:
+      - project_scope
+      - squad_list
+      - complexity_assessment
+
+  - id: phase_2_plan
+    name: "Pipeline Planning & Sequencing"
+    agent: pipeline-coordinator
+    task: coordinate-pipeline.md
+    depends_on: [phase_1_scope]
+    description: "Create detailed execution plan with dependencies and timeline"
+    checkpoint:
+      gate: "Pipeline plan approved with all handoff points defined"
+      veto: "HALT if dependencies cannot be resolved"
+    outputs:
+      - detailed_pipeline_plan
+      - timeline
+      - risk_assessment
+
+  - id: phase_3_execute
+    name: "Iterative Execution"
+    agent: orchestra-chief
+    task: diagnose.md
+    depends_on: [phase_2_plan]
+    description: "Execute each squad phase with handoffs and quality gates"
+    support_agents: [handoff-manager, context-keeper, quality-governor, escalation-handler]
+    checkpoint:
+      gate: "Each squad phase completed with quality approval"
+      veto: "HALT and escalate if quality gate fails after 2 attempts"
+    outputs:
+      - phase_deliverables
+      - handoff_artifacts
+      - quality_reports
+
+  - id: phase_4_integration
+    name: "Cross-Squad Integration"
+    agent: quality-governor
+    task: audit-quality.md
+    depends_on: [phase_3_execute]
+    description: "Verify all squad outputs integrate properly"
+    checkpoint:
+      gate: "All deliverables integrate without conflicts"
+      veto: "HALT if integration issues found"
+    outputs:
+      - integration_report
+      - final_quality_score
+
+  - id: phase_5_delivery
+    name: "Final Delivery & Report"
+    agent: delivery-tracker
+    task: track-delivery.md
+    depends_on: [phase_4_integration]
+    description: "Generate final delivery report with all squad outputs"
+    checkpoint:
+      gate: "All deliverables confirmed and documented"
+      veto: "HALT if any deliverable is missing"
+    outputs:
+      - final_delivery_report
+      - squad_summary
+      - lessons_learned
+
+completion_criteria:
+  - "All squads executed in planned sequence"
+  - "All handoffs managed with context preserved"
+  - "All quality gates passed"
+  - "Cross-squad integration verified"
+  - "Final delivery report generated"
+  - "Lessons learned documented"

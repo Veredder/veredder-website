@@ -1,0 +1,94 @@
+# DevOps Squad Routing Catalog
+# Maps infrastructure domains to specialist agents
+
+domains:
+  kubernetes:
+    keywords: [kubernetes, k8s, pod, deployment, service, ingress, helm, operator, namespace, cluster, node, kubectl]
+    primary_agent: kelsey-hightower
+    secondary_agent: container-specialist
+    triggers: ["kubernetes issue", "k8s setup", "cluster management", "pod scheduling"]
+    description: "Kubernetes architecture and management"
+
+  containers:
+    keywords: [docker, container, dockerfile, image, registry, build, multi-stage, distroless, containerd, runtime]
+    primary_agent: container-specialist
+    secondary_agent: jessie-frazelle
+    triggers: ["containerize", "docker build", "container issue", "image optimization"]
+    description: "Container building, optimization, and orchestration"
+
+  container_security:
+    keywords: [container security, seccomp, capabilities, rootless, non-root, apparmor, selinux, image scanning, CVE]
+    primary_agent: jessie-frazelle
+    secondary_agent: container-specialist
+    triggers: ["harden container", "container vulnerability", "rootless container"]
+    description: "Container security and Linux system-level hardening"
+
+  ci_cd:
+    keywords: [pipeline, ci/cd, github actions, gitlab ci, build, deploy, release, artifact, workflow, action, runner]
+    primary_agent: ci-cd-engineer
+    secondary_agent: container-specialist
+    triggers: ["setup pipeline", "build failed", "deploy automation", "github actions"]
+    description: "CI/CD pipeline design and optimization"
+
+  cloud:
+    keywords: [AWS, GCP, Azure, cloud, EC2, Lambda, S3, VPC, IAM, serverless, CDN, load balancer, auto-scaling]
+    primary_agent: cloud-architect
+    secondary_agent: iac-engineer
+    triggers: ["cloud setup", "AWS architecture", "cloud cost", "cloud migration"]
+    description: "Cloud infrastructure design and management"
+
+  infrastructure_as_code:
+    keywords: [terraform, pulumi, cloudformation, CDK, HCL, state, module, provider, plan, apply, drift]
+    primary_agent: iac-engineer
+    secondary_agent: cloud-architect
+    triggers: ["write terraform", "infrastructure code", "state issue", "module design"]
+    description: "Infrastructure as Code management"
+
+  monitoring:
+    keywords: [monitoring, prometheus, grafana, datadog, metrics, alerts, dashboard, logging, ELK, loki, opentelemetry]
+    primary_agent: monitoring-engineer
+    secondary_agent: charity-majors
+    triggers: ["setup monitoring", "create alerts", "build dashboard", "configure logging"]
+    description: "Metrics, alerts, dashboards, and logging"
+
+  observability:
+    keywords: [observability, tracing, distributed tracing, honeycomb, jaeger, zipkin, high-cardinality, structured events]
+    primary_agent: charity-majors
+    secondary_agent: monitoring-engineer
+    triggers: ["observability strategy", "distributed tracing", "debug production", "why is prod broken"]
+    description: "Observability strategy and production debugging"
+
+  reliability:
+    keywords: [SRE, SLO, SLI, error budget, reliability, uptime, availability, incident, on-call, toil, capacity, chaos]
+    primary_agent: sre-engineer
+    secondary_agent: charity-majors
+    triggers: ["define SLOs", "incident response", "capacity planning", "reduce toil"]
+    description: "Site reliability and SLO management"
+
+  deployment:
+    keywords: [deploy, release, canary, blue-green, rolling, rollback, zero-downtime, feature flag, progressive rollout]
+    primary_agent: ci-cd-engineer
+    secondary_agent: sre-engineer
+    triggers: ["deploy to production", "rollback", "deployment strategy", "zero downtime"]
+    description: "Deployment strategies and release management"
+
+  scaling:
+    keywords: [scale, scaling, auto-scaling, horizontal, vertical, HPA, load testing, capacity, performance]
+    primary_agent: cloud-architect
+    secondary_agent: sre-engineer
+    triggers: ["scale application", "handle more traffic", "auto-scaling", "load testing"]
+    description: "Scaling infrastructure and applications"
+
+  incident:
+    keywords: [incident, outage, down, broken, error, alert, page, escalation, post-mortem, RCA]
+    primary_agent: sre-engineer
+    secondary_agent: monitoring-engineer
+    triggers: ["production is down", "service outage", "incident response", "post-mortem"]
+    description: "Incident response and post-mortem"
+
+  platform:
+    keywords: [platform, developer platform, golden path, self-service, internal developer, IDP]
+    primary_agent: kelsey-hightower
+    secondary_agent: ci-cd-engineer
+    triggers: ["build platform", "developer experience", "self-service infrastructure"]
+    description: "Platform engineering and developer experience"

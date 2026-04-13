@@ -1,0 +1,107 @@
+# Cross-Squad Pipeline Workflow
+# Coordinates multi-squad execution from assessment to delivery
+
+workflow:
+  id: wf-cross-squad-pipeline
+  name: "Pipeline Cross-Squad"
+  trigger: "*cross-squad-pipeline"
+  entry_agent: orchestra-chief
+  estimated_duration: "Variable — depends on squads involved"
+  description: |
+    Workflow de orquestracao cross-squad. Avalia quais squads sao necessarias,
+    planeja o pipeline, executa com handoffs gerenciados e quality gates em
+    cada transicao.
+
+  type: sequential
+  sequence:
+    - agent: orchestra-chief
+      action: diagnose
+      creates: assessment
+    - agent: squad-router
+      action: route-cross-squad
+      creates: routing_decisions
+    - agent: pipeline-coordinator
+      action: coordinate-pipeline
+      creates: pipeline_plan
+    - agent: handoff-manager
+      action: manage-handoff
+      creates: handoff_artifacts
+    - agent: delivery-tracker
+      action: track-delivery
+      creates: delivery_report
+
+phases:
+  - id: phase_1_assessment
+    name: "Request Assessment"
+    agent: orchestra-chief
+    task: diagnose.md
+    depends_on: []
+    description: "Assess request and identify which squads are needed"
+    checkpoint:
+      gate: "Squads identified and dependencies mapped"
+      veto: "HALT if request is unclear or single-squad (route directly)"
+    outputs:
+      - squads_needed
+      - dependency_map
+
+  - id: phase_2_routing
+    name: "Squad Routing"
+    agent: squad-router
+    task: route-cross-squad.md
+    depends_on: [phase_1_assessment]
+    description: "Route to appropriate squads with entry agents identified"
+    checkpoint:
+      gate: "All squads routed with confirmed entry agents"
+      veto: "HALT if any squad cannot be reached"
+    outputs:
+      - routing_decisions
+      - entry_agents
+
+  - id: phase_3_pipeline
+    name: "Pipeline Planning"
+    agent: pipeline-coordinator
+    task: coordinate-pipeline.md
+    depends_on: [phase_2_routing]
+    description: "Plan execution sequence with parallel opportunities"
+    checkpoint:
+      gate: "Pipeline plan approved with handoff points defined"
+      veto: "HALT if circular dependencies detected"
+    outputs:
+      - pipeline_plan
+      - critical_path
+      - parallel_opportunities
+
+  - id: phase_4_execution
+    name: "Pipeline Execution"
+    agent: orchestra-chief
+    task: diagnose.md
+    depends_on: [phase_3_pipeline]
+    description: "Execute pipeline — activate squads in sequence, manage handoffs"
+    support_agents: [handoff-manager, context-keeper, quality-governor]
+    checkpoint:
+      gate: "Each squad completes and passes quality gate before next starts"
+      veto: "HALT if quality gate fails — escalate to escalation-handler"
+    outputs:
+      - squad_deliverables
+      - handoff_artifacts
+      - quality_verdicts
+
+  - id: phase_5_delivery
+    name: "Delivery Confirmation"
+    agent: delivery-tracker
+    task: track-delivery.md
+    depends_on: [phase_4_execution]
+    description: "Confirm all squads delivered and generate final report"
+    checkpoint:
+      gate: "All squads completed with PASS quality verdicts"
+      veto: "HALT if any squad has unresolved FAIL verdict"
+    outputs:
+      - delivery_report
+      - final_status
+
+completion_criteria:
+  - "All required squads identified and routed"
+  - "Pipeline executed in optimal sequence"
+  - "Handoffs managed with context preserved"
+  - "Quality gates passed at every transition"
+  - "Final delivery confirmed"

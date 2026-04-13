@@ -1,0 +1,111 @@
+# Infrastructure Setup Workflow
+# Full infrastructure provisioning lifecycle
+
+workflow:
+  id: wf-infrastructure-setup
+  name: "Setup de Infraestrutura Completo"
+  trigger: "*infrastructure-setup"
+  entry_agent: devops-chief
+  estimated_duration: "2-4 hours"
+  description: |
+    Workflow completo de provisionamento de infraestrutura, desde o design
+    da arquitetura cloud ate a configuracao de monitoramento e seguranca.
+
+  type: sequential
+  sequence:
+    - agent: devops-chief
+      action: diagnose
+      creates: infra_assessment
+    - agent: cloud-architect
+      action: configure-infrastructure
+      creates: cloud_design
+    - agent: iac-engineer
+      action: configure-infrastructure
+      creates: iac_code
+    - agent: monitoring-engineer
+      action: setup-monitoring
+      creates: monitoring
+    - agent: sre-engineer
+      action: incident-response
+      creates: reliability_config
+
+phases:
+  - id: phase_1_assessment
+    name: "Infrastructure Assessment"
+    agent: devops-chief
+    task: diagnose.md
+    depends_on: []
+    description: "Assess infrastructure needs, budget, and constraints"
+    checkpoint:
+      gate: "Requirements documented and cloud provider chosen"
+      veto: "HALT if budget or requirements are unclear"
+    outputs:
+      - infrastructure_requirements
+      - cloud_provider
+      - budget_constraints
+
+  - id: phase_2_cloud_design
+    name: "Cloud Architecture Design"
+    agent: cloud-architect
+    task: configure-infrastructure.md
+    depends_on: [phase_1_assessment]
+    description: "Design cloud architecture following Well-Architected Framework"
+    support_agents: [kelsey-hightower]
+    checkpoint:
+      gate: "Architecture designed with all pillars addressed"
+      veto: "HALT if security or reliability concerns not addressed"
+    outputs:
+      - architecture_diagram
+      - resource_inventory
+      - networking_design
+
+  - id: phase_3_iac
+    name: "Infrastructure as Code"
+    agent: iac-engineer
+    task: configure-infrastructure.md
+    depends_on: [phase_2_cloud_design]
+    description: "Implement infrastructure as Terraform/Pulumi code"
+    checkpoint:
+      gate: "IaC written, planned, and reviewed"
+      veto: "HALT if plan shows destructive changes to existing resources"
+    outputs:
+      - iac_code
+      - terraform_plan
+      - state_configuration
+
+  - id: phase_4_monitoring
+    name: "Monitoring & Observability"
+    agent: monitoring-engineer
+    task: setup-monitoring.md
+    depends_on: [phase_3_iac]
+    description: "Configure monitoring for new infrastructure"
+    support_agents: [charity-majors]
+    checkpoint:
+      gate: "Golden signals monitored with actionable alerts"
+      veto: "HALT if infrastructure health is not observable"
+    outputs:
+      - monitoring_config
+      - dashboards
+      - alert_rules
+
+  - id: phase_5_reliability
+    name: "Reliability Configuration"
+    agent: sre-engineer
+    task: incident-response.md
+    depends_on: [phase_4_monitoring]
+    description: "Configure SLOs, runbooks, and incident response for new infrastructure"
+    checkpoint:
+      gate: "SLOs defined and incident runbooks created"
+      veto: "HALT if critical services lack SLOs"
+    outputs:
+      - slo_definitions
+      - runbooks
+      - disaster_recovery_plan
+
+completion_criteria:
+  - "Cloud architecture designed and documented"
+  - "Infrastructure provisioned via IaC"
+  - "Monitoring and alerts configured"
+  - "SLOs defined for critical services"
+  - "Incident runbooks created"
+  - "Security hardened"

@@ -1,0 +1,107 @@
+# Orchestrator Squad Routing Catalog
+# Maps domains to squads for cross-squad routing
+
+domains:
+  brand_strategy:
+    keywords: [brand, branding, positioning, brand equity, brand identity, brand strategy, logo, naming, brand architecture]
+    primary_squad: brand-squad
+    entry_agent: brand-chief
+    description: "Brand strategy, positioning, identity, naming"
+
+  copywriting:
+    keywords: [copy, copywriting, headline, sales page, email sequence, ad copy, landing page copy, sales letter, VSL script]
+    primary_squad: copy-squad
+    entry_agent: copy-chief
+    description: "Copywriting across all mediums"
+
+  design:
+    keywords: [design system, UX, UI design, wireframe, prototype, design ops, atomic design, Figma, layout]
+    primary_squad: design-squad
+    entry_agent: design-chief
+    description: "Design systems, UX research, visual design"
+
+  development:
+    keywords: [code, develop, implement, build, frontend, backend, API, test, refactor, react, vue, clean code, architecture]
+    primary_squad: dev-squad
+    entry_agent: dev-chief
+    description: "Software development across the full stack"
+
+  devops:
+    keywords: [deploy, CI/CD, docker, kubernetes, cloud, terraform, monitoring, SRE, pipeline, infrastructure]
+    primary_squad: devops-squad
+    entry_agent: devops-chief
+    description: "Infrastructure, CI/CD, and platform engineering"
+
+  cybersecurity:
+    keywords: [security, pentest, vulnerability, hack, CVE, incident, red team, blue team, AppSec, OWASP]
+    primary_squad: cybersecurity
+    entry_agent: cyber-chief
+    description: "Offensive and defensive security operations"
+
+  data_analytics:
+    keywords: [analytics, data, metrics, growth, retention, cohort, funnel, KPI, dashboard, data modeling]
+    primary_squad: data-squad
+    entry_agent: data-chief
+    description: "Data analytics, growth metrics, and customer intelligence"
+
+  traffic_ads:
+    keywords: [ads, traffic, campaign, Facebook ads, Google ads, paid media, ROAS, CPM, CPC, targeting, creative]
+    primary_squad: traffic-masters
+    entry_agent: traffic-chief
+    description: "Paid traffic acquisition across platforms"
+
+  business_strategy:
+    keywords: [offer, pricing, leads, business model, scaling, grand slam offer, value equation, acquisition]
+    primary_squad: hormozi-squad
+    entry_agent: hormozi-chief
+    description: "Business scaling with Hormozi frameworks"
+
+  content:
+    keywords: [content strategy, content calendar, repurpose, distribution, content pillar, content creation]
+    primary_squad: content-distillery
+    entry_agent: null
+    description: "Content strategy and distribution"
+
+  storytelling:
+    keywords: [narrative, story, storytelling, hero journey, brand story, origin story]
+    primary_squad: storytelling
+    entry_agent: null
+    description: "Narrative strategy and storytelling"
+
+  marketing:
+    keywords: [marketing, growth marketing, funnel, conversion, retention, email marketing]
+    primary_squad: marketing-opes
+    entry_agent: null
+    description: "Marketing operations and strategy"
+
+  executive:
+    keywords: [C-level, CEO, CTO, CMO, CFO, board, strategic planning, vision, OKR]
+    primary_squad: c-level-squad
+    entry_agent: null
+    description: "Executive strategy and C-level functions"
+
+# Common multi-squad patterns for quick detection
+multi_squad_patterns:
+  - pattern: "brand + copy"
+    trigger_keywords: ["brand messaging", "brand voice", "brand copy"]
+    squads: [brand-squad, copy-squad]
+
+  - pattern: "design + dev"
+    trigger_keywords: ["design to code", "implement design", "build from Figma"]
+    squads: [design-squad, dev-squad]
+
+  - pattern: "dev + devops"
+    trigger_keywords: ["build and deploy", "develop and ship", "full delivery"]
+    squads: [dev-squad, devops-squad]
+
+  - pattern: "copy + design + dev"
+    trigger_keywords: ["landing page", "website", "web app with content"]
+    squads: [copy-squad, design-squad, dev-squad]
+
+  - pattern: "full product launch"
+    trigger_keywords: ["launch product", "go to market", "product launch"]
+    squads: [hormozi-squad, copy-squad, design-squad, dev-squad, devops-squad, traffic-masters]
+
+  - pattern: "security audit + fix"
+    trigger_keywords: ["security audit and fix", "pentest and remediate"]
+    squads: [cybersecurity, dev-squad, devops-squad]

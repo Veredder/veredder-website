@@ -1,0 +1,94 @@
+# Dev Squad Routing Catalog
+# Maps development domains to specialist agents
+
+domains:
+  clean_code:
+    keywords: [clean code, naming, readability, functions, SOLID, single responsibility, open closed, liskov, interface segregation, dependency inversion, boy scout]
+    primary_agent: uncle-bob
+    secondary_agent: martin-fowler
+    triggers: ["messy code", "hard to read", "code smell", "needs cleanup"]
+    description: "Code quality, readability, and SOLID principles"
+
+  refactoring:
+    keywords: [refactoring, refactor, code smell, extract method, move method, technical debt, legacy, modernize]
+    primary_agent: martin-fowler
+    secondary_agent: refactor-specialist
+    triggers: ["needs refactoring", "code smells", "hard to change", "tightly coupled"]
+    description: "Code transformation and design improvement"
+
+  tdd:
+    keywords: [tdd, test driven, test first, red green refactor, xp, extreme programming, simple design]
+    primary_agent: kent-beck
+    secondary_agent: test-engineer
+    triggers: ["how to test", "test first", "TDD approach", "test driven"]
+    description: "Test-Driven Development and XP practices"
+
+  testing:
+    keywords: [test, unit test, integration test, e2e, end to end, coverage, jest, vitest, playwright, cypress, mock, stub, fixture]
+    primary_agent: test-engineer
+    secondary_agent: kent-beck
+    triggers: ["write tests", "test strategy", "flaky tests", "coverage low"]
+    description: "Testing strategy and test implementation"
+
+  frontend_performance:
+    keywords: [web vitals, LCP, FID, CLS, INP, lighthouse, bundle size, tree shaking, code splitting, lazy loading, core web vitals, page speed]
+    primary_agent: addy-osmani
+    secondary_agent: perf-engineer
+    triggers: ["page is slow", "bundle too large", "bad lighthouse score", "loading slow"]
+    description: "Frontend and web performance optimization"
+
+  react:
+    keywords: [react, hooks, useState, useEffect, component, JSX, redux, zustand, server components, suspense, context, state management]
+    primary_agent: dan-abramov
+    secondary_agent: addy-osmani
+    triggers: ["react problem", "state management", "component architecture", "rendering issue"]
+    description: "React development and state management"
+
+  frontend_general:
+    keywords: [frontend, CSS, animation, transition, vue, nuxt, SVG, DX, developer experience, design system, UI component]
+    primary_agent: sarah-drasner
+    secondary_agent: dan-abramov
+    triggers: ["animation", "vue.js", "frontend architecture", "developer experience"]
+    description: "General frontend engineering and creative coding"
+
+  api_design:
+    keywords: [API, REST, GraphQL, gRPC, endpoint, schema, OpenAPI, swagger, webhook, authentication, authorization, CORS, rate limit]
+    primary_agent: api-architect
+    secondary_agent: db-developer
+    triggers: ["design API", "REST endpoint", "GraphQL schema", "API versioning"]
+    description: "API design and integration patterns"
+
+  performance:
+    keywords: [performance, slow, optimize, profiling, benchmark, memory leak, CPU, latency, caching, Redis, bottleneck, N+1]
+    primary_agent: perf-engineer
+    secondary_agent: addy-osmani
+    triggers: ["app is slow", "memory leak", "optimize query", "reduce latency"]
+    description: "Full-stack performance optimization"
+
+  database:
+    keywords: [database, SQL, query, ORM, Prisma, migration, schema, index, PostgreSQL, MySQL, MongoDB, transaction, foreign key, normalization]
+    primary_agent: db-developer
+    secondary_agent: perf-engineer
+    triggers: ["database design", "slow query", "migration", "data model"]
+    description: "Database development and query optimization"
+
+  architecture:
+    keywords: [architecture, clean architecture, hexagonal, microservices, monolith, domain driven, DDD, component, boundary, dependency, modular]
+    primary_agent: uncle-bob
+    secondary_agent: martin-fowler
+    triggers: ["system architecture", "how to structure", "component boundaries", "dependency management"]
+    description: "Software architecture design and patterns"
+
+  legacy_code:
+    keywords: [legacy, technical debt, old code, migration, strangler fig, characterization test, seam, dependency breaking]
+    primary_agent: refactor-specialist
+    secondary_agent: martin-fowler
+    triggers: ["legacy system", "old codebase", "technical debt", "modernize"]
+    description: "Legacy code modernization and tech debt reduction"
+
+  debugging:
+    keywords: [bug, debug, error, exception, crash, fix, issue, broken, regression, stack trace]
+    primary_agent: dev-chief
+    secondary_agent: test-engineer
+    triggers: ["something is broken", "error in production", "bug report", "not working"]
+    description: "Debugging and issue resolution"
