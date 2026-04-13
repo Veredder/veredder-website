@@ -2,7 +2,19 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Zoom blocking (Abhijit style) -->
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
+        });
+        document.addEventListener('wheel', function(e) {
+            if (e.ctrlKey || e.metaKey) e.preventDefault();
+        }, { passive: false });
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+    </script>
     <title>Veredder — I direct what doesn't exist yet.</title>
     <meta name="description" content="Direção criativa de projetos audiovisuais com IA.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -180,34 +192,11 @@
             transform-origin: 50% 0%;
             will-change: transform;
         }
-        .transition-panel .tg {
+        .transition-panel img {
             width: 100%; height: 100%;
             display: block;
-        }
-        .tg-white-to-black {
-            background: radial-gradient(ellipse 80% 60% at 50% 30%, #fff 0%, #aaa 30%, #333 60%, #000 100%);
-        }
-        .tg-black-to-white {
-            background: radial-gradient(ellipse 80% 60% at 50% 30%, #000 0%, #333 30%, #aaa 60%, #fff 100%);
-        }
-        .tg-green-radial {
-            background:
-                radial-gradient(ellipse 60% 50% at 40% 40%, rgba(170,255,0,0.25) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 40% at 65% 55%, rgba(155,48,255,0.20) 0%, transparent 60%),
-                radial-gradient(ellipse 80% 60% at 50% 30%, #fff 0%, #888 40%, #000 100%);
-        }
-        .tg-purple-radial {
-            background:
-                radial-gradient(ellipse 55% 45% at 55% 35%, rgba(155,48,255,0.30) 0%, transparent 55%),
-                radial-gradient(ellipse 45% 35% at 30% 60%, rgba(170,255,0,0.15) 0%, transparent 55%),
-                radial-gradient(ellipse 80% 60% at 50% 40%, #000 0%, #222 50%, #fff 100%);
-        }
-        .tg-mixed-radial {
-            background:
-                radial-gradient(ellipse 50% 40% at 35% 45%, rgba(170,255,0,0.20) 0%, transparent 55%),
-                radial-gradient(ellipse 55% 45% at 65% 40%, rgba(155,48,255,0.25) 0%, transparent 55%),
-                radial-gradient(ellipse 40% 30% at 50% 50%, rgba(255,255,255,0.10) 0%, transparent 40%),
-                #000;
+            object-fit: cover;
+            object-position: center;
         }
 
         /* ══════ SECTION 2: WORK SHOWCASE (black bg, sticky) ══════ */
@@ -234,10 +223,41 @@
         /* Spacer drives the sticky scroll length */
         .scroll-spacer { height: 1500px; position: relative; }
 
-        /* Radial gradient blobs in dark section */
-        .gradient-blob {
-            position: absolute; border-radius: 50%;
-            filter: blur(120px); pointer-events: none;
+        /* Radial gradient blobs in dark section — now using PNG */
+        .gradient-blob-img {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.7;
+            mix-blend-mode: screen;
+        }
+        /* Scroll-driven work items */
+        .work-items {
+            position: absolute;
+            inset: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .work-item {
+            position: absolute;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .work-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .work-item-title {
+            font-size: 14px; color: #fff;
+            margin-bottom: 8px;
+        }
+        .work-item-desc {
+            font-size: 14px; color: #b8b8b8;
+            max-width: 400px;
+        }
+        .work-item-counter {
+            font-size: 14px; color: rgba(255,255,255,0.2);
+            margin-top: 16px;
         }
 
         /* ══════ SECTION 3: PROJECTS (white bg) ══════ */
@@ -313,12 +333,16 @@
         }
         .about-text a { color: #0099ff; }
         .about-img {
-            width: 100%; aspect-ratio: 1;
-            background: #e0e0e0;
+            width: 100%; aspect-ratio: 3/4;
             margin: 40px 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; color: #b8b8b8;
-            filter: grayscale(1) brightness(1.21);
+            overflow: hidden;
+            position: relative;
+        }
+        .about-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
         }
 
         /* ══════ SECTION 5: WORK HISTORY (white bg) ══════ */
@@ -428,7 +452,7 @@
     <div class="header-top">
         <a href="#" class="header-top-name">Veredder</a>
         <div class="header-top-right">
-            <a href="#about">About</a>
+            <a href="#about">Sobre mim</a>
         </div>
     </div>
 
@@ -470,30 +494,65 @@
     </div>
 </section>
 
-<!-- Transition: White → Black (green/purple radial) -->
+<!-- Transition: White → Black (PNG radial) -->
 <div class="transition-stretch">
-    <figure class="transition-panel"><div class="tg tg-green-radial"></div></figure>
+    <figure class="transition-panel"><img src="./transition-white-to-black.png" alt="Transition"></figure>
 </div>
 
 <!-- ══════════════════════════════════════════════
      SECTION 2: WORK SHOWCASE (black background, sticky)
      ══════════════════════════════════════════════ -->
-<section class="section-dark">
+<section class="section-dark" id="workSection">
     <div class="sticky-viewport">
-        <!-- Radial gradient blobs -->
-        <div class="gradient-blob" style="width:500px;height:500px;top:20%;left:10%;background:rgba(170,255,0,0.06);"></div>
-        <div class="gradient-blob" style="width:400px;height:400px;top:30%;right:10%;background:rgba(155,48,255,0.08);"></div>
-        <div class="work-content">
-            <p class="work-title">Selected Work</p>
-            <p class="work-subtitle">Direção criativa, produção de vídeo e geração de imagens com inteligência artificial. Projetos em curadoria.</p>
+        <!-- Gradient blob PNGs -->
+        <img class="gradient-blob-img" src="./gradient-blob.png" style="width:500px;top:10%;left:5%;" alt="">
+        <img class="gradient-blob-img" src="./gradient-blob.png" style="width:450px;bottom:5%;right:5%;transform:rotate(180deg);" alt="">
+
+        <!-- Scroll-driven work items that switch as you scroll -->
+        <div class="work-items" id="workItems">
+            <div class="work-item active" data-index="0">
+                <p class="work-item-title">Selected Work</p>
+                <p class="work-item-desc">Direção criativa, produção de vídeo e geração de imagens com inteligência artificial.</p>
+                <p class="work-item-counter">Scroll ↓</p>
+            </div>
+            <div class="work-item" data-index="1">
+                <p class="work-item-title">Projeto 01 — Video IA</p>
+                <p class="work-item-desc">Em curadoria. Narrativa visual gerada inteiramente com inteligência artificial.</p>
+                <p class="work-item-counter">01 / 06</p>
+            </div>
+            <div class="work-item" data-index="2">
+                <p class="work-item-title">Projeto 02 — Imagem IA</p>
+                <p class="work-item-desc">Em curadoria. Key visuals e arte conceitual gerados com IA.</p>
+                <p class="work-item-counter">02 / 06</p>
+            </div>
+            <div class="work-item" data-index="3">
+                <p class="work-item-title">Projeto 03 — Campanha</p>
+                <p class="work-item-desc">Em curadoria. Direção criativa de campanha visual com ferramentas generativas.</p>
+                <p class="work-item-counter">03 / 06</p>
+            </div>
+            <div class="work-item" data-index="4">
+                <p class="work-item-title">Projeto 04 — Experimental</p>
+                <p class="work-item-desc">Em curadoria. Exploração artística na fronteira entre IA e expressão humana.</p>
+                <p class="work-item-counter">04 / 06</p>
+            </div>
+            <div class="work-item" data-index="5">
+                <p class="work-item-title">Projeto 05 — Direção Criativa</p>
+                <p class="work-item-desc">Em curadoria. Conceito e direção de arte para produção audiovisual com IA.</p>
+                <p class="work-item-counter">05 / 06</p>
+            </div>
+            <div class="work-item" data-index="6">
+                <p class="work-item-title">Projeto 06 — Video IA</p>
+                <p class="work-item-desc">Em curadoria. Cenas cinematográficas geradas e dirigidas com inteligência artificial.</p>
+                <p class="work-item-counter">06 / 06</p>
+            </div>
         </div>
     </div>
     <div class="scroll-spacer"></div>
 </section>
 
-<!-- Transition: Black → White (purple radial) -->
+<!-- Transition: Black → White (PNG radial) -->
 <div class="transition-stretch">
-    <figure class="transition-panel"><div class="tg tg-purple-radial"></div></figure>
+    <figure class="transition-panel"><img src="./transition-black-to-white.png" alt="Transition"></figure>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -537,9 +596,9 @@
     </div>
 </section>
 
-<!-- Transition: radial mixed -->
+<!-- Transition: Mixed radial (PNG) -->
 <div class="transition-stretch">
-    <figure class="transition-panel"><div class="tg tg-mixed-radial"></div></figure>
+    <figure class="transition-panel"><img src="./transition-mixed-radial.png" alt="Transition"></figure>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -547,8 +606,8 @@
      ══════════════════════════════════════════════ -->
 <section class="section-light" id="about">
     <div class="about-content">
-        <div class="about-title reveal">About</div>
-        <div class="about-img reveal">Sua foto aqui</div>
+        <div class="about-title reveal">Sobre mim</div>
+        <div class="about-img reveal"><img src="./profile-photo.png" alt="Veredder"></div>
         <p class="about-text reveal">A máquina precisa de um olho. Hoje, a Veredder existe nesse cruzamento. Não é um estúdio de tecnologia. Não é uma produtora tradicional. É o lugar onde inteligência artificial encontra intenção artística.</p>
         <p class="about-text reveal">Onde cada frame gerado carrega uma decisão humana — de cor, de ritmo, de significado. Porque IA sem direção criativa é só ruído bonito.</p>
         <p class="about-text reveal">Direção criativa, produção de vídeo e geração de imagens com IA. Se você tem uma ideia impossível, a Veredder tem o processo.</p>
@@ -580,9 +639,9 @@
     </div>
 </section>
 
-<!-- Transition: final -->
+<!-- Transition: final (PNG) -->
 <div class="transition-stretch">
-    <figure class="transition-panel"><div class="tg tg-green-radial"></div></figure>
+    <figure class="transition-panel"><img src="./transition-white-to-black.png" alt="Transition"></figure>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -593,10 +652,9 @@
         <p class="footer-cta">Pronto pra criar o que ainda não existe?</p>
         <p class="footer-tagline">Directed by humans. Generated by machines. Veredder.</p>
         <div class="footer-links">
-            <a href="#">Email</a>
-            <a href="#">Instagram</a>
-            <a href="#">X</a>
-            <a href="#">LinkedIn</a>
+            <a href="mailto:guilherme@veredder.com">Email</a>
+            <a href="https://www.instagram.com/veredder/" target="_blank">Instagram</a>
+            <a href="https://www.linkedin.com/in/guilhermeveredder/" target="_blank">LinkedIn</a>
         </div>
         <div class="footer-legal">
             <a href="#">Privacy</a>
@@ -677,6 +735,24 @@
 
     // Fire once on load
     window.dispatchEvent(new Event('scroll'));
+
+    // Scroll-driven work item switching (Abhijit style)
+    const workSection = document.getElementById('workSection');
+    const workItemEls = document.querySelectorAll('.work-item');
+    const totalItems = workItemEls.length;
+
+    window.addEventListener('scroll', () => {
+        if (!workSection) return;
+        const rect = workSection.getBoundingClientRect();
+        const sectionHeight = workSection.offsetHeight;
+        const scrolled = -rect.top;
+        const progress = Math.max(0, Math.min(1, scrolled / (sectionHeight - window.innerHeight)));
+        const activeIndex = Math.min(totalItems - 1, Math.floor(progress * totalItems));
+
+        workItemEls.forEach((item, i) => {
+            item.classList.toggle('active', i === activeIndex);
+        });
+    }, { passive: true });
 
     // Entrance: letters appear one by one
     letters.forEach((letter, i) => {
