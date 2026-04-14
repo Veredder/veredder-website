@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
+        });
+        document.addEventListener('wheel', function(e) {
+            if (e.ctrlKey || e.metaKey) e.preventDefault();
+        }, { passive: false });
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+    </script>
+    <title>Veredder — I direct what doesn't exist yet.</title>
+    <meta name="description" content="Direção criativa de projetos audiovisuais com IA.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;900&family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@900&family=Space+Mono:wght@700&family=Silkscreen&family=Abril+Fatface&family=Bungee+Shade&family=Syne:wght@800&family=Climate+Crisis&display=swap" rel="stylesheet">
+    <script type="importmap">
+        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Geist', sans-serif;
+            font-size: 14px;
+            letter-spacing: -0.03em;
+            background: #fff;
+            color: #0b0b0b;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+        /* Noise overlay */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.03"/></svg>');
+            pointer-events: none; z-index: 9999; opacity: 0.3;
+        }
+        a { color: #0099ff; text-decoration: underline; }
+        a:hover { color: #AAFF00; }
+
+        /* ══════ NEBULA — fixed fullscreen background ══════ */
+        #nebulaContainer {
+            position: fixed; inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #nebulaContainer canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* ══════ ALL SECTIONS — white semi-transparent over nebula ══════ */
+        .section {
+            position: relative;
+            z-index: 1;
+            background: rgba(255,255,255,0.82);
+            width: 100%;
+        }
+        /* Hero is more transparent so nebula shows through stronger */
+        .hero {
+            background: rgba(255,255,255,0.6);
+            width: 100%;
+            height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Header Top */
+        .header-top {
+            width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 2;
+        }
+        .header-top-name { font-size: 14px; color: #0b0b0b; text-decoration: none; }
+        .header-top-right { display: flex; align-items: center; gap: 4px; }
+        .header-top-right a { font-size: 14px; color: #0b0b0b; text-decoration: none; }
+
+        /* Ticker / 3D Posters */
+        .ticker-container {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            min-height: 800px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            z-index: 1;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+        }
+        .posters {
+            display: flex; flex-direction: row; align-items: center;
+            gap: 0; height: 562px; width: max-content;
+            animation: tickerScroll 20s linear infinite;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .poster {
+            flex-shrink: 0; width: 200px; height: 250px;
+            position: relative; overflow: hidden;
+            transform: perspective(1143px) rotateY(-50deg) skewY(20deg);
+            opacity: 0.7;
+            -webkit-mask: linear-gradient(3deg, rgba(0,0,0,0.2) 0%, #000 55.7397%);
+            mask: linear-gradient(3deg, rgba(0,0,0,0.2) 0%, #000 55.7397%);
+            will-change: transform; transition: opacity 0.3s; cursor: pointer;
+        }
+        .poster:hover { opacity: 1; }
+        .poster-inner {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 6px;
+        }
+        .poster-inner.green-tint { background: radial-gradient(circle at 50% 50%, rgba(170,255,0,0.15), rgba(170,255,0,0.03) 60%, #111 100%); }
+        .poster-inner.purple-tint { background: radial-gradient(circle at 50% 50%, rgba(155,48,255,0.15), rgba(155,48,255,0.03) 60%, #111 100%); }
+        .poster-inner.white-tint { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), rgba(100,100,100,0.03) 60%, #111 100%); }
+        .poster-inner.mixed-tint { background: radial-gradient(circle at 30% 70%, rgba(170,255,0,0.10), transparent 50%), radial-gradient(circle at 70% 30%, rgba(155,48,255,0.10), transparent 50%), #111; }
+        .poster-num { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* Interactive VEREDDER Title */
+        .hero-title-overlay {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            display: flex; align-items: baseline; justify-content: center;
+            pointer-events: auto;
+        }
+        .hero-letter {
+            display: inline-block;
+            font-size: clamp(60px, 12vw, 160px);
+            color: #0b0b0b;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer; user-select: none; line-height: 1;
+            text-shadow: 0 0 60px rgba(255,255,255,0.8);
+        }
+        .hero-letter:nth-child(1) { font-family: 'Syne', sans-serif; font-weight: 800; }
+        .hero-letter:nth-child(2) { font-family: 'Instrument Serif', serif; font-style: italic; }
+        .hero-letter:nth-child(3) { font-family: 'Abril Fatface', serif; }
+        .hero-letter:nth-child(4) { font-family: 'Space Mono', monospace; font-weight: 700; }
+        .hero-letter:nth-child(5) { font-family: 'Playfair Display', serif; font-weight: 900; }
+        .hero-letter:nth-child(6) { font-family: 'Silkscreen', monospace; font-size: clamp(50px, 10vw, 135px); }
+        .hero-letter:nth-child(7) { font-family: 'Bungee Shade', sans-serif; font-size: clamp(50px, 10vw, 135px); }
+        .hero-letter:nth-child(8) { font-family: 'Climate Crisis', sans-serif; font-size: clamp(48px, 9.5vw, 130px); }
+        .hero-letter:hover { transform: translateY(-12px) rotate(-3deg) scale(1.1); }
+        .hero-letter:nth-child(odd):hover { color: #79B300; text-shadow: 0 0 40px rgba(170,255,0,0.5); }
+        .hero-letter:nth-child(even):hover { color: #7B1FCC; text-shadow: 0 0 40px rgba(155,48,255,0.5); }
+        .hero-letter:nth-child(3):hover { transform: translateY(-12px) rotate(5deg) scale(1.15); }
+        .hero-letter:nth-child(5):hover { transform: translateY(-16px) rotate(-6deg) scale(1.05); }
+        .hero-letter:nth-child(7):hover { transform: translateY(-8px) rotate(4deg) scale(1.2); }
+
+        /* Header Bottom */
+        .header-bottom {
+            width: 100%;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            z-index: 2;
+        }
+        .header-bottom-tagline { font-size: 14px; color: #0b0b0b; }
+        .header-bottom-right { display: flex; align-items: center; gap: 5px; font-size: 14px; text-align: right; }
+
+        /* ══════ WORK SECTION (sticky scroll) ══════ */
+        .work-section {
+            background: rgba(255,255,255,0.5); /* more transparent — nebula shows stronger here */
+        }
+        .sticky-viewport {
+            position: sticky; top: 0;
+            width: 100%; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .work-items {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .work-item {
+            position: absolute;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .work-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .work-item-title { font-size: 14px; color: #0b0b0b; margin-bottom: 8px; }
+        .work-item-desc { font-size: 14px; color: #666; max-width: 400px; }
+        .work-item-counter { font-size: 14px; color: #b8b8b8; margin-top: 16px; }
+        .scroll-spacer { height: 1500px; position: relative; }
+
+        /* ══════ CONTENT SECTIONS ══════ */
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+        .section-label { font-size: 14px; color: #0b0b0b; margin-bottom: 50px; }
+
+        /* Projects Grid */
+        .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .project-card {
+            aspect-ratio: 0.9; overflow: hidden; position: relative; cursor: pointer;
+            border: 1px solid rgba(34,34,34,0.1);
+            background: rgba(246,246,243,0.8); backdrop-filter: blur(7px);
+            transition: all 0.3s;
+        }
+        .project-card:hover { border-color: rgba(170,255,0,0.3); }
+        .project-card-inner { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 10px; }
+        .project-card-top { font-size: 14px; color: #0b0b0b; }
+        .project-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; font-size: 14px; color: #b8b8b8; }
+        .project-card-visual { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .project-card-placeholder { font-size: 12px; color: #b8b8b8; text-transform: uppercase; letter-spacing: 0.1em; }
+        @media (max-width: 768px) { .projects-grid { grid-template-columns: 1fr; } }
+
+        /* About */
+        .about-content { max-width: 441px; margin: 0 auto; padding: 100px 20px; }
+        .about-title { font-size: 14px; color: #0b0b0b; margin-bottom: 50px; }
+        .about-text { font-size: 14px; color: #0b0b0b; line-height: 1.6; margin-bottom: 20px; }
+        .about-img { width: 100%; aspect-ratio: 3/4; margin: 40px 0; overflow: hidden; position: relative; }
+        .about-img img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+
+        /* Services */
+        .work-history { max-width: 441px; margin: 0 auto; padding: 50px 20px 100px; }
+        .wh-title { font-size: 14px; color: #0b0b0b; margin-bottom: 30px; }
+        .wh-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 15px 0; border-bottom: 1px solid #b8b8b8; }
+        .wh-row:last-child { border-bottom: none; }
+        .wh-company { font-size: 14px; color: #0b0b0b; }
+        .wh-role { font-size: 14px; color: #b8b8b8; }
+
+        /* Footer */
+        .footer-section {
+            position: relative; z-index: 1;
+            background: rgba(255,255,255,0.82);
+            width: 100%; padding: 50px 20px;
+        }
+        .footer-inner { max-width: 441px; margin: 0 auto; text-align: center; }
+        .footer-cta { font-size: 14px; color: #b8b8b8; margin-bottom: 20px; }
+        .footer-tagline { font-size: 14px; color: #0b0b0b; margin-bottom: 40px; }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .footer-links a { font-size: 14px; color: #0b0b0b; text-decoration: none; }
+        .footer-links a:hover { color: #AAFF00; }
+        .footer-legal { display: flex; justify-content: center; gap: 20px; padding-top: 30px; border-top: 1px solid #b8b8b8; }
+        .footer-legal a { font-size: 14px; color: #b8b8b8; text-decoration: none; }
+        .footer-copy { font-size: 14px; color: #b8b8b8; margin-top: 20px; }
+
+        /* Scroll reveal */
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-letter { font-size: clamp(36px, 10vw, 60px) !important; }
+            .header-bottom-tagline { font-size: 12px; }
+            .ticker-container { min-height: 500px; }
+            .posters { height: 400px; }
+            .poster { width: 140px; height: 175px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nebula — fixed fullscreen behind everything -->
+<div id="nebulaContainer"></div>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero">
+    <div class="header-top">
+        <a href="#" class="header-top-name">Veredder</a>
+        <div class="header-top-right">
+            <a href="#about">Sobre mim</a>
+        </div>
+    </div>
+
+    <div class="ticker-container">
+        <div class="posters" id="posters">
+            <figure class="poster"><div class="poster-inner green-tint"><span class="poster-num">01</span></div></figure>
+            <figure class="poster"><div class="poster-inner purple-tint"><span class="poster-num">02</span></div></figure>
+            <figure class="poster"><div class="poster-inner white-tint"><span class="poster-num">03</span></div></figure>
+            <figure class="poster"><div class="poster-inner mixed-tint"><span class="poster-num">04</span></div></figure>
+            <figure class="poster"><div class="poster-inner green-tint"><span class="poster-num">05</span></div></figure>
+            <figure class="poster"><div class="poster-inner purple-tint"><span class="poster-num">06</span></div></figure>
+            <figure class="poster"><div class="poster-inner white-tint"><span class="poster-num">07</span></div></figure>
+            <figure class="poster"><div class="poster-inner mixed-tint"><span class="poster-num">08</span></div></figure>
+            <figure class="poster"><div class="poster-inner green-tint"><span class="poster-num">09</span></div></figure>
+            <figure class="poster"><div class="poster-inner purple-tint"><span class="poster-num">10</span></div></figure>
+            <figure class="poster"><div class="poster-inner mixed-tint"><span class="poster-num">11</span></div></figure>
+        </div>
+    </div>
+
+    <div class="hero-title-overlay" id="heroName">
+        <span class="hero-letter" data-original="V">V</span>
+        <span class="hero-letter" data-original="E">E</span>
+        <span class="hero-letter" data-original="R">R</span>
+        <span class="hero-letter" data-original="E">E</span>
+        <span class="hero-letter" data-original="D">D</span>
+        <span class="hero-letter" data-original="D">D</span>
+        <span class="hero-letter" data-original="E">E</span>
+        <span class="hero-letter" data-original="R">R</span>
+    </div>
+
+    <div class="header-bottom">
+        <span class="header-bottom-tagline">I direct what doesn't exist yet.</span>
+        <div class="header-bottom-right">
+            <span>Scroll &amp; discover</span>
+        </div>
+    </div>
+</section>
+
+<!-- ══════ WORK SHOWCASE (scroll-driven switching) ══════ -->
+<section class="section work-section" id="workSection">
+    <div class="sticky-viewport">
+        <div class="work-items" id="workItems">
+            <div class="work-item active" data-index="0">
+                <p class="work-item-title">Selected Work</p>
+                <p class="work-item-desc">Direção criativa, produção de vídeo e geração de imagens com inteligência artificial.</p>
+                <p class="work-item-counter">Scroll ↓</p>
+            </div>
+            <div class="work-item" data-index="1">
+                <p class="work-item-title">Projeto 01 — Video IA</p>
+                <p class="work-item-desc">Em curadoria. Narrativa visual gerada inteiramente com inteligência artificial.</p>
+                <p class="work-item-counter">01 / 06</p>
+            </div>
+            <div class="work-item" data-index="2">
+                <p class="work-item-title">Projeto 02 — Imagem IA</p>
+                <p class="work-item-desc">Em curadoria. Key visuals e arte conceitual gerados com IA.</p>
+                <p class="work-item-counter">02 / 06</p>
+            </div>
+            <div class="work-item" data-index="3">
+                <p class="work-item-title">Projeto 03 — Campanha</p>
+                <p class="work-item-desc">Em curadoria. Direção criativa de campanha visual com ferramentas generativas.</p>
+                <p class="work-item-counter">03 / 06</p>
+            </div>
+            <div class="work-item" data-index="4">
+                <p class="work-item-title">Projeto 04 — Experimental</p>
+                <p class="work-item-desc">Em curadoria. Exploração artística na fronteira entre IA e expressão humana.</p>
+                <p class="work-item-counter">04 / 06</p>
+            </div>
+            <div class="work-item" data-index="5">
+                <p class="work-item-title">Projeto 05 — Direção Criativa</p>
+                <p class="work-item-desc">Em curadoria. Conceito e direção de arte para produção audiovisual com IA.</p>
+                <p class="work-item-counter">05 / 06</p>
+            </div>
+            <div class="work-item" data-index="6">
+                <p class="work-item-title">Projeto 06 — Video IA</p>
+                <p class="work-item-desc">Em curadoria. Cenas cinematográficas geradas e dirigidas com inteligência artificial.</p>
+                <p class="work-item-counter">06 / 06</p>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-spacer"></div>
+</section>
+
+<!-- ══════ PROJECTS ══════ -->
+<section class="section">
+    <div class="section-inner">
+        <div class="section-label">Projetos</div>
+        <div class="projects-grid">
+            <div class="project-card reveal"><div class="project-card-inner"><div class="project-card-top">Projeto 01</div><div class="project-card-visual"><span class="project-card-placeholder">Em curadoria</span></div><div class="project-card-bottom"><span>Video IA</span><span>2025</span></div></div></div>
+            <div class="project-card reveal"><div class="project-card-inner"><div class="project-card-top">Projeto 02</div><div class="project-card-visual"><span class="project-card-placeholder">Em curadoria</span></div><div class="project-card-bottom"><span>Imagem IA</span><span>2025</span></div></div></div>
+            <div class="project-card reveal"><div class="project-card-inner"><div class="project-card-top">Projeto 03</div><div class="project-card-visual"><span class="project-card-placeholder">Em curadoria</span></div><div class="project-card-bottom"><span>Campanha</span><span>2025</span></div></div></div>
+            <div class="project-card reveal"><div class="project-card-inner"><div class="project-card-top">Projeto 04</div><div class="project-card-visual"><span class="project-card-placeholder">Em curadoria</span></div><div class="project-card-bottom"><span>Experimental</span><span>2025</span></div></div></div>
+            <div class="project-card reveal"><div class="project-card-inner"><div class="project-card-top">Projeto 05</div><div class="project-card-visual"><span class="project-card-placeholder">Em curadoria</span></div><div class="project-card-bottom"><span>Direção Criativa</span><span>2024</span></div></div></div>
+            <div class="project-card reveal"><div class="project-card-inner"><div class="project-card-top">Projeto 06</div><div class="project-card-visual"><span class="project-card-placeholder">Em curadoria</span></div><div class="project-card-bottom"><span>Video IA</span><span>2024</span></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════ ABOUT ══════ -->
+<section class="section" id="about">
+    <div class="about-content">
+        <div class="about-title reveal">Sobre mim</div>
+        <div class="about-img reveal"><img src="./profile-photo.png" alt="Veredder"></div>
+        <p class="about-text reveal">A máquina precisa de um olho. Hoje, a Veredder existe nesse cruzamento. Não é um estúdio de tecnologia. Não é uma produtora tradicional. É o lugar onde inteligência artificial encontra intenção artística.</p>
+        <p class="about-text reveal">Onde cada frame gerado carrega uma decisão humana — de cor, de ritmo, de significado. Porque IA sem direção criativa é só ruído bonito.</p>
+        <p class="about-text reveal">Direção criativa, produção de vídeo e geração de imagens com IA. Se você tem uma ideia impossível, a Veredder tem o processo.</p>
+    </div>
+</section>
+
+<!-- ══════ SERVICES ══════ -->
+<section class="section">
+    <div class="work-history">
+        <div class="wh-title reveal">Serviços</div>
+        <div class="wh-row reveal"><div><span class="wh-company">Direção Criativa IA</span></div><div class="wh-role">Conceito, estética, narrativa</div></div>
+        <div class="wh-row reveal"><div><span class="wh-company">Produção de Vídeo IA</span></div><div class="wh-role">Runway, Sora, Pika</div></div>
+        <div class="wh-row reveal"><div><span class="wh-company">Geração de Imagens IA</span></div><div class="wh-role">Midjourney, DALL-E, Flux</div></div>
+        <div class="wh-row reveal"><div><span class="wh-company">Consultoria Criativa</span></div><div class="wh-role">Workshops, pipelines</div></div>
+    </div>
+</section>
+
+<!-- ══════ FOOTER ══════ -->
+<footer class="footer-section">
+    <div class="footer-inner">
+        <p class="footer-cta">Pronto pra criar o que ainda não existe?</p>
+        <p class="footer-tagline">Directed by humans. Generated by machines. Veredder.</p>
+        <div class="footer-links">
+            <a href="mailto:guilherme@veredder.com">Email</a>
+            <a href="https://www.instagram.com/veredder/" target="_blank">Instagram</a>
+            <a href="https://www.linkedin.com/in/guilhermeveredder/" target="_blank">LinkedIn</a>
+        </div>
+        <div class="footer-legal">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Veredder. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<!-- ══════ SCRIPTS ══════ -->
+<script>
+    // Duplicate posters for infinite loop
+    const postersEl = document.getElementById('posters');
+    postersEl.innerHTML += postersEl.innerHTML;
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Interactive VEREDDER letters — scramble on hover
+    const scrambleChars = '!@#$%^&*()_+{}|:<>?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const letters = document.querySelectorAll('.hero-letter');
+    letters.forEach(letter => {
+        let scrambleInterval;
+        const original = letter.dataset.original;
+        letter.addEventListener('mouseenter', () => {
+            let iterations = 0;
+            clearInterval(scrambleInterval);
+            scrambleInterval = setInterval(() => {
+                letter.textContent = scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+                iterations++;
+                if (iterations > 8) { clearInterval(scrambleInterval); letter.textContent = original; }
+            }, 50);
+        });
+        letter.addEventListener('mouseleave', () => { clearInterval(scrambleInterval); letter.textContent = original; });
+    });
+
+    // Scroll-driven work item switching
+    const workSection = document.getElementById('workSection');
+    const workItemEls = document.querySelectorAll('.work-item');
+    const totalItems = workItemEls.length;
+
+    window.addEventListener('scroll', () => {
+        if (!workSection) return;
+        const rect = workSection.getBoundingClientRect();
+        const sectionHeight = workSection.offsetHeight;
+        const scrolled = -rect.top;
+        const progress = Math.max(0, Math.min(1, scrolled / (sectionHeight - window.innerHeight)));
+        const activeIndex = Math.min(totalItems - 1, Math.floor(progress * totalItems));
+        workItemEls.forEach((item, i) => {
+            item.classList.toggle('active', i === activeIndex);
+        });
+    }, { passive: true });
+
+    // Entrance: letters appear one by one
+    letters.forEach((letter, i) => {
+        letter.style.opacity = '0';
+        letter.style.transform = 'translateY(40px) rotate(' + (Math.random() * 20 - 10) + 'deg)';
+        setTimeout(() => {
+            letter.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            letter.style.opacity = '1';
+            letter.style.transform = 'translateY(0) rotate(0deg)';
+        }, 300 + i * 80);
+    });
+</script>
+
+<!-- ══════ NEBULA SHADER ══════ -->
+<script type="module">
+import * as THREE from 'three';
+
+const container = document.getElementById('nebulaContainer');
+const scene = new THREE.Scene();
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const renderer = new THREE.WebGLRenderer({ antialias: false });
+const pixelScale = Math.min(window.devicePixelRatio || 1, 0.6);
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(pixelScale);
+container.appendChild(renderer.domElement);
+
+const uniforms = {
+    u_ticks: { value: 0 },
+    u_screen: { value: new THREE.Vector3(window.innerWidth * pixelScale, window.innerHeight * pixelScale, 0.8) },
+    u_time_mul: { value: 0.15 },
+    u_light_fade: { value: 3500.0 },
+    u_loop_limit: { value: 40.0 },
+    u_chroma_shift: { value: new THREE.Vector4(2.0, 5.5, 1.2, 3.0) },
+    u_core_radius: { value: 2.5 },
+    u_advance_base: { value: 0.055 },
+    u_noise_freq: { value: 0.6 },
+    u_scatter: { value: 1.8 }
+};
+
+const fragmentShader = `
+    uniform vec3 u_screen;
+    uniform float u_ticks;
+    uniform float u_time_mul;
+    uniform float u_light_fade;
+    uniform float u_loop_limit;
+    uniform vec4 u_chroma_shift;
+    uniform float u_core_radius;
+    uniform float u_advance_base;
+    uniform float u_noise_freq;
+    uniform float u_scatter;
+    void main() {
+        vec2 fc = gl_FragCoord.xy;
+        vec4 acc = vec4(0.0);
+        float depth = 0.0;
+        float step_val = 0.0;
+        float t_scaled = u_ticks * u_time_mul;
+        vec3 ray_dir = normalize(vec3(fc * 2.0 - u_screen.xy, -u_screen.y));
+        for (float k = 0.0; k < 250.0; k++) {
+            if (k >= u_loop_limit) break;
+            vec3 pos = depth * ray_dir;
+            step_val = 1.0;
+            for (int m = 0; m < 6; m++) {
+                if (step_val > 8.9) break;
+                vec3 shift = pos.yzx * step_val * u_noise_freq;
+                shift += depth * 0.2;
+                shift += t_scaled;
+                pos += cos(shift) / step_val;
+                step_val *= 1.4285714;
+            }
+            float len_xy = length(pos.xy);
+            float core_diff = abs(u_core_radius - len_xy);
+            step_val = u_advance_base + (core_diff * 0.1);
+            depth += step_val;
+            float scatter_factor = u_scatter / step_val;
+            vec4 tint = cos(depth + u_chroma_shift) + 1.0;
+            acc += (tint * scatter_factor) / u_light_fade;
+        }
+        gl_FragColor = acc;
+    }
+`;
+
+const vertexShader = `void main() { gl_Position = vec4(position, 1.0); }`;
+
+const material = new THREE.ShaderMaterial({
+    fragmentShader, vertexShader, uniforms,
+    depthWrite: false, depthTest: false
+});
+const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+scene.add(quad);
+
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    uniforms.u_screen.value.set(window.innerWidth * pixelScale, window.innerHeight * pixelScale, 1);
+});
+
+const clock = new THREE.Clock();
+function animate() {
+    requestAnimationFrame(animate);
+    uniforms.u_ticks.value = clock.getElapsedTime();
+    renderer.render(scene, camera);
+}
+animate();
+</script>
+
+</body>
+</html>
