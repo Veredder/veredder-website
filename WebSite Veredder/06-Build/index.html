@@ -60,12 +60,12 @@
         .section {
             position: relative;
             z-index: 1;
-            background: rgba(255,255,255,0.82);
+            background: rgba(255,255,255,0.73);
             width: 100%;
         }
         /* Hero is more transparent so nebula shows through stronger */
         .hero {
-            background: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.5);
             width: 100%;
             height: 100vh;
             display: flex; flex-direction: column;
@@ -112,6 +112,7 @@
         .poster {
             flex-shrink: 0; width: 200px; height: 250px;
             position: relative; overflow: hidden;
+            border-radius: 16px;
             transform: perspective(1143px) rotateY(-50deg) skewY(20deg);
             opacity: 0.7;
             -webkit-mask: linear-gradient(3deg, rgba(0,0,0,0.2) 0%, #000 55.7397%);
@@ -119,16 +120,14 @@
             will-change: transform; transition: opacity 0.3s; cursor: pointer;
         }
         .poster:hover { opacity: 1; }
-        .poster-inner {
+        .poster video {
             width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            flex-direction: column; gap: 6px;
+            object-fit: cover;
+            display: block;
         }
-        .poster-inner.green-tint { background: radial-gradient(circle at 50% 50%, rgba(170,255,0,0.15), rgba(170,255,0,0.03) 60%, #111 100%); }
-        .poster-inner.purple-tint { background: radial-gradient(circle at 50% 50%, rgba(155,48,255,0.15), rgba(155,48,255,0.03) 60%, #111 100%); }
-        .poster-inner.white-tint { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), rgba(100,100,100,0.03) 60%, #111 100%); }
-        .poster-inner.mixed-tint { background: radial-gradient(circle at 30% 70%, rgba(170,255,0,0.10), transparent 50%), radial-gradient(circle at 70% 30%, rgba(155,48,255,0.10), transparent 50%), #111; }
-        .poster-num { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.1em; }
+        .poster video.zoom-in {
+            transform: scale(1.2);
+        }
 
         /* Interactive VEREDDER Title */
         .hero-title-overlay {
@@ -172,7 +171,7 @@
 
         /* ══════ WORK SECTION (sticky scroll) ══════ */
         .work-section {
-            background: rgba(255,255,255,0.5); /* more transparent — nebula shows stronger here */
+            background: rgba(255,255,255,0.42); /* more transparent — nebula shows stronger here */
         }
         .sticky-viewport {
             position: sticky; top: 0;
@@ -242,7 +241,7 @@
         /* Footer */
         .footer-section {
             position: relative; z-index: 1;
-            background: rgba(255,255,255,0.82);
+            background: rgba(255,255,255,0.73);
             width: 100%; padding: 50px 20px;
         }
         .footer-inner { max-width: 441px; margin: 0 auto; text-align: center; }
@@ -261,7 +260,8 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero-letter { font-size: clamp(36px, 10vw, 60px) !important; }
+            .hero-title-overlay { width: 100%; padding: 0 5px; flex-wrap: wrap; justify-content: center; gap: 0; }
+            .hero-letter { font-size: clamp(36px, 12vw, 60px) !important; }
             .header-bottom-tagline { font-size: 12px; }
             .ticker-container { min-height: 500px; }
             .posters { height: 400px; }
@@ -285,17 +285,29 @@
 
     <div class="ticker-container">
         <div class="posters" id="posters">
-            <figure class="poster"><div class="poster-inner green-tint"><span class="poster-num">01</span></div></figure>
-            <figure class="poster"><div class="poster-inner purple-tint"><span class="poster-num">02</span></div></figure>
-            <figure class="poster"><div class="poster-inner white-tint"><span class="poster-num">03</span></div></figure>
-            <figure class="poster"><div class="poster-inner mixed-tint"><span class="poster-num">04</span></div></figure>
-            <figure class="poster"><div class="poster-inner green-tint"><span class="poster-num">05</span></div></figure>
-            <figure class="poster"><div class="poster-inner purple-tint"><span class="poster-num">06</span></div></figure>
-            <figure class="poster"><div class="poster-inner white-tint"><span class="poster-num">07</span></div></figure>
-            <figure class="poster"><div class="poster-inner mixed-tint"><span class="poster-num">08</span></div></figure>
-            <figure class="poster"><div class="poster-inner green-tint"><span class="poster-num">09</span></div></figure>
-            <figure class="poster"><div class="poster-inner purple-tint"><span class="poster-num">10</span></div></figure>
-            <figure class="poster"><div class="poster-inner mixed-tint"><span class="poster-num">11</span></div></figure>
+            <figure class="poster"><video src="./videos/ccasacabeca1t.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/heron-final.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video class="zoom-in" src="./videos/laserjahs.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/f1.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video class="zoom-in" src="./videos/finalsereia1332.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/pb2.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/planaline01.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/sapokxhafinal.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/sapozase1.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/t1.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/vrougenafinal.mp4" autoplay loop muted playsinline></video></figure>
+            <!-- duplicate set for seamless loop -->
+            <figure class="poster"><video src="./videos/ccasacabeca1t.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/heron-final.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video class="zoom-in" src="./videos/laserjahs.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/f1.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video class="zoom-in" src="./videos/finalsereia1332.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/pb2.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/planaline01.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/sapokxhafinal.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/sapozase1.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/t1.mp4" autoplay loop muted playsinline></video></figure>
+            <figure class="poster"><video src="./videos/vrougenafinal.mp4" autoplay loop muted playsinline></video></figure>
         </div>
     </div>
 
@@ -419,10 +431,6 @@
 
 <!-- ══════ SCRIPTS ══════ -->
 <script>
-    // Duplicate posters for infinite loop
-    const postersEl = document.getElementById('posters');
-    postersEl.innerHTML += postersEl.innerHTML;
-
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
